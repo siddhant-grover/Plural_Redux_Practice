@@ -7,6 +7,7 @@ const AboutPage = () => (
       This app uses React, Redux, React Router, and many other helpful
       libraries.
     </p>
+      <a href="https://github.com/siddhant-grover/Plural_Redux_Practice" style={{textDecoration:"none"}}>Access this ongoing project on Github</a>
   </div>
 );
 
