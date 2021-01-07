@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-const CourseList = ({ courses }) => (//all jsx in paranthesis so that we can omit return 
+const CourseList = ({ courses,onDeleteClick }) => (//all jsx in paranthesis so that we can omit return 
   <table className="table">
     <thead>
       <tr>
@@ -10,6 +10,7 @@ const CourseList = ({ courses }) => (//all jsx in paranthesis so that we can omi
         <th>Title</th>
         <th>Author</th>
         <th>Category</th>
+        <th/>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,14 @@ const CourseList = ({ courses }) => (//all jsx in paranthesis so that we can omi
             </td>
             <td>{course.authorName}</td>
             <td>{course.category}</td>
+            <td>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => onDeleteClick(course)}
+              >
+                Delete
+              </button>
+            </td>
           </tr>
         );
       })}
@@ -37,7 +46,8 @@ const CourseList = ({ courses }) => (//all jsx in paranthesis so that we can omi
 );
 
 CourseList.propTypes = {
-  courses: PropTypes.array.isRequired
+  courses: PropTypes.array.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
 };
 
 export default CourseList;

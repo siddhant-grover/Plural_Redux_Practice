@@ -5,12 +5,15 @@ import { loadAuthors } from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
 import CourseForm from "./CourseForm";
 import {newCourse} from "../../../tools/mockData"
+import Spinner from "../common/Spinner"
+import {toast} from "react-toastify";//method we call to display the toast 
 
         
 function ManageCoursePage ({ courses, authors, loadAuthors, loadCourses, saveCourse ,history, ...props}) {
 
     const[course,setCourse] = useState({...props.course});//our form will need state to hold the form field values before they are saved 
     const[errors,setErrors] = useState({});
+    const [saving,setSaving]=useState(false);
 
     useEffect(()=>{ 
        
@@ -44,15 +47,37 @@ function ManageCoursePage ({ courses, authors, loadAuthors, loadCourses, saveCou
       }
       //event returns numbers as strings , so we use parseInt to convert to integer
 
+
+function formIsValid() {//client side validation 
+  const { title, authorId, category } = course;
+  const errors = {};
+
+  if (!title) errors.title = "Title is required.";
+  if (!authorId) errors.author = "Author is required";
+  if (!category) errors.category = "Category is required";
+
+  setErrors(errors);
+  // Form is valid if the errors object still has no properties
+  return Object.keys(errors).length === 0;//Object.keys(errors) returns array of object's properties
+}
+
       function handleSave(event){// saveCourse already dispatched in mapStateToprops
           event.preventDefault();
+          if(!formIsValid()) return;//if form is invalid we return early  
+          setSaving(true);
           saveCourse(course).then(()=>{
-              history.push('/courses')//after save use react routers history to change the url 
-          })
+          toast.success("Course saved");//display the toast after save is completed 
+          history.push('/courses')//after save use react routers history to change the url 
+          }).catch(error=>{
+            setSaving(false);//re enable the save button
+            setErrors({onSave:error.message});
+          });
       }
     return ( 
         
-    <CourseForm course={course} errors={errors} authors={authors} onChange={handleChange} onSave={handleSave}/>
+       courses.length ===0 || authors.length ===0 ?<Spinner/>:
+    <CourseForm course={course} errors={errors} authors={authors} onChange={handleChange} onSave={handleSave} saving={saving}/>
+      
     )
 
 }

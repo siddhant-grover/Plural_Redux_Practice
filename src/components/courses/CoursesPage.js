@@ -6,6 +6,9 @@ import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import CourseList from "./CourseList"
 import { Redirect } from "react-router-dom";
+import Spinner from "../common/Spinner";
+import {toast} from "react-toastify";
+
 
 class CoursesPage extends React.Component {
   state = {
@@ -27,12 +30,20 @@ class CoursesPage extends React.Component {
       })
   }
   }
+  handleDeleteCourse = course => {
+    toast.success("Course deleted");//before as we will not wait for the action to succeed
+    this.props.actions.deleteCourse(course).catch(error=>{
+      toast.error("Delete failed"+error.message,{autoClose:false});
+    });  
+  };
 
   render() {
     return (
       <>
       {this.state.redirectToAddCoursePage && <Redirect to="/course" />}
         <h2>Courses</h2>
+        {this.props.loading?
+        <Spinner/>:<>
         <button
           style={{ marginBottom: 20 }}
           className="btn btn-primary add-course"
@@ -40,8 +51,9 @@ class CoursesPage extends React.Component {
         >
           Add Course
         </button>
-      <CourseList courses={this.props.courses}/>
-   </>
+         <CourseList onDeleteClick={this.handleDeleteCourse} courses={this.props.courses}/></>
+        }
+      </>
     );
   }
 }
@@ -50,7 +62,9 @@ CoursesPage.propTypes = {
   //dispatch:PropTypes.func.isRequired // automatically added to props if we remove mapDispatchToProps 
   courses: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
-  authors:PropTypes.array.isRequired
+  authors:PropTypes.array.isRequired,
+  loading:PropTypes.bool.isRequired,
+
 };
 
 function mapStateToProps(state) {
@@ -64,7 +78,8 @@ function mapStateToProps(state) {
               authorName: state.authors.find(a => a.id === course.authorId).name
             };
           }),
-    authors: state.authors 
+    authors: state.authors,
+    loading:state.apiCallsInProgress > 0 //bool
   }
 }
 
@@ -72,7 +87,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       loadCourses:bindActionCreators(courseActions.loadCourses, dispatch),//bindActionCreators return an object mimicing an original obj but with each func wrapped in a call to dispatch 
-      loadAuthors:bindActionCreators(authorActions.loadAuthors, dispatch)
+      loadAuthors:bindActionCreators(authorActions.loadAuthors, dispatch),
+      deleteCourse:bindActionCreators(courseActions.deleteCourse,dispatch)
     }
   };
 }
