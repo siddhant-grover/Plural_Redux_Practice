@@ -2,7 +2,7 @@
 
 ## Get Started
 
-LOCATION : React Redux's > > 9 > demos > after
+LOCATION : C:\Users\sgrover\Desktop\ReacrReduxCourseFiles\Building apps with react and redux\Plural_Redux_Practice
 
 1. **Install '[Node 8](https://nodejs.org)** or newer. Need to run multiple versions of Node? Use [nvm](https://github.com/creationix/nvm) or [nvm-windows](https://github.com/coreybutler/nvm-windows)(https://github.com/coryhouse/pluralsight-redux-starter/archive/master.zip)
 2. **Navigate to this project's root directory on the command line.**
